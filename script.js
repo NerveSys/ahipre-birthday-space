@@ -57,23 +57,32 @@ function getCosmicFact(ageYears) {
 
 async function showApodForDate(birthDate) {
     const apodDate = formatDateForApod(birthDate);
-    const apiKey = "fp5enluuc7nziSq8HjnUmQftxexapCwSMaw68uIN";
+    const apiKey = "zyDJfYLddF8wXNpbV0b1KGjZ2NO8JGvBLdg5sueA";
 
-    const url = `https://api.nasa.gov/planetary/apod?api_key=${apiKey}&date=${apodDate}`;
+    // 1. UPDATED: Use the new WordPress-based NASA API endpoint
+    const url = `https://science.nasa.gov/wp-json/wp/v2/apod-basic?date=${apodDate}&api_key=${apiKey}`;
 
     try {
         const response = await fetch(url);
         if (!response.ok) {
             throw new Error("APOD request failed");
         }
-        const data = await response.json();
+        let data = await response.json();
 
-        if (data.media_type === "image") {
-            document.body.style.backgroundImage = `url(${data.url})`;
+        // 2. NEW: The WordPress API sometimes returns an array for date queries. 
+        // If it's an array, grab the first item.
+        if (Array.isArray(data)) {
+            data = data[0];
+        }
+
+        // 3. UPDATED: Use 'hdurl' instead of 'url' to get the actual image file
+        if (data.media_type === "image" && data.hdurl) {
+            document.body.style.backgroundImage = `url(${data.hdurl})`;
         }
 
         apodTitle.textContent = data.title || "Astronomy Picture of the Day";
-        // Use the APOD explanation as info text (shortened).
+        
+        // 4. UPDATED: The new API sometimes stores the text inside an object, or as plain text
         const explanation = data.explanation || "";
         apodNote.textContent =
             `This is NASA's Astronomy Picture of the Day for ${apodDate}. ` +
