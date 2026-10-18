@@ -57,7 +57,7 @@ function getCosmicFact(ageYears) {
 
 async function showApodForDate(birthDate) {
     const apodDate = formatDateForApod(birthDate);
-    const apiKey = "nLRiueu6VLj2wnpRFTgxKlIoIrkx1jlnHJeFnAcc";
+    const apiKey = "fp5enluuc7nziSq8HjnUmQftxexapCwSMaw68uIN";
 
     const url = `https://api.nasa.gov/planetary/apod?api_key=${apiKey}&date=${apodDate}`;
 
